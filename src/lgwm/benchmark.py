@@ -7,7 +7,7 @@ import numpy as np
 from .evaluation import CLASSES, metrics
 
 POSITIVE, LEGITIMATE = CLASSES[0], CLASSES[2]
-MANIFEST_FORMAT = "gui-hijack-bench-v1"
+MANIFEST_FORMAT = "rswt-bench-v1"
 FRAME_KEYS = ("base", "obs", "clean")
 
 

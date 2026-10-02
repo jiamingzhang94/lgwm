@@ -1,9 +1,9 @@
 {
-  "format": "gui-hijack-bench-v1",
+  "format": "rswt-bench-v1",
   "files": {
     "test": {
       "path": "rswt_bench_test.jsonl",
-      "sha256": "c4d08c9f1f0ec61cf142c6804849279b89a9cadf413a61f8efa216ccf5ef4350",
+      "sha256": "5f22f4848b5221970142babb7abc572b68cb1119f770266f787a786817dcb707",
       "split": "validation",
       "n": 966,
       "by_class": {
@@ -14,7 +14,6 @@
         "5_benign_misplace": 150
       },
       "donor_pairs": 222,
-      "source_bench_sha256": "d46ee8d68ef15ba529a49ef77dbdf8225ec10a2b90d8ac128d4cc202c2fa0ef3",
       "indexes": {
         "gui_odyssey": {
           "sha256": "225ca627de2a7852ef5445d956c3a850862df8e3a9d7cebd15f4bf7b9c3bf009",
@@ -28,7 +27,7 @@
     },
     "train": {
       "path": "rswt_bench_train.jsonl",
-      "sha256": "e0a7acdb13f51101da24c21870808d5d2f8b1297f0f8af41a01647873981ea54",
+      "sha256": "0bc7fa9698a4dec824cc75f28fa8e9149dd868c9887bf8457fc69fdb7111a8f2",
       "split": "train",
       "n": 6786,
       "by_class": {
@@ -39,7 +38,6 @@
         "5_benign_misplace": 900
       },
       "donor_pairs": null,
-      "source_bench_sha256": "8b83e807c0c6129870e82913b609990c851c7a213ed3e367444c939546949a6b",
       "indexes": {
         "gui_odyssey": {
           "sha256": "d12ba667738b26679c3ad5aba425b4942080c4ad2e3086ecc4695fa3edb50946",
