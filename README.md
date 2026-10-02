@@ -2,6 +2,8 @@
 
 Official code for **Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents**.
 
+Jiaming Zhang, Xuan Wang, Fuyao Zhang, Yang Cao, Lingjuan Lyu, Wei Yang Bryan Lim
+
 [Project page](https://jiamingzhang94.github.io/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data)
 
 LGWM is a decoder-free, action-conditioned world model for GUI agents. Given the
@@ -157,6 +159,17 @@ python tools/train_harm_head.py --features outputs/features/train_retrained \
 Add `--resume` to resume a training run. To evaluate your trained model, use
 `--weights weights/retrained-online` in feature extraction and
 `--harm-head weights/retrained-harm-head` in evaluation, with new output paths.
+
+## Citation
+
+```bibtex
+@misc{zhang2026lgwm,
+  title        = {Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents},
+  author       = {Zhang, Jiaming and Wang, Xuan and Zhang, Fuyao and Cao, Yang and Lyu, Lingjuan and Lim, Wei Yang Bryan},
+  year         = {2026},
+  howpublished = {\url{https://github.com/jiamingzhang94/lgwm}}
+}
+```
 
 ## License
 

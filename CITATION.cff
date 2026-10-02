@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use LGWM, please cite it as below."
+title: "Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents"
+type: software
+authors:
+  - family-names: Zhang
+    given-names: Jiaming
+    affiliation: Nanyang Technological University
+  - family-names: Wang
+    given-names: Xuan
+    affiliation: Nanyang Technological University
+  - family-names: Zhang
+    given-names: Fuyao
+    affiliation: Nanyang Technological University
+  - family-names: Cao
+    given-names: Yang
+    affiliation: Institute of Science Tokyo
+  - family-names: Lyu
+    given-names: Lingjuan
+    affiliation: Sony AI
+  - family-names: Lim
+    given-names: Wei Yang Bryan
+    affiliation: Nanyang Technological University
+repository-code: "https://github.com/jiamingzhang94/lgwm"
+url: "https://jiamingzhang94.github.io/lgwm/"
+license: Apache-2.0
+date-released: "2026-10-02"
