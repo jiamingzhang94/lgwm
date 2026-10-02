@@ -2,7 +2,7 @@
 
 Official code for **Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents**.
 
-[Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data)
+[Project page](https://jiamingzhang94.github.io/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data)
 
 LGWM is a decoder-free, action-conditioned world model for GUI agents. Given the
 current screenshot and an action, it predicts the representation of the next
