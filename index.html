@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LGWM: A Latent World Model that Verifies GUI Agent Transitions</title>
 <meta name="description" content="LGWM is a decoder-free, action-conditioned world model for GUI agents. It predicts the next screen in representation space and verifies each transition with one cosine distance: 0.987 AUC on RSWT-Bench at 17 ms per decision.">
+<meta name="author" content="Jiaming Zhang, Xuan Wang, Fuyao Zhang, Yang Cao, Lingjuan Lyu, Wei Yang Bryan Lim">
 <meta name="keywords" content="LGWM, GUI world model, latent world model, GUI agent safety, computer-use agents, transition verification, interaction hijacking, RSWT-Bench, JEPA">
 <link rel="canonical" href="https://jiamingzhang94.github.io/lgwm/">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -31,6 +32,7 @@
       "description": "A decoder-free, action-conditioned latent world model that verifies GUI agent transitions by comparing the predicted and observed next-screen representations.",
       "codeRepository": "https://github.com/jiamingzhang94/lgwm",
       "url": "https://jiamingzhang94.github.io/lgwm/",
+      "author": [{"@type": "Person", "name": "Jiaming Zhang", "affiliation": {"@type": "Organization", "name": "Nanyang Technological University"}}, {"@type": "Person", "name": "Xuan Wang", "affiliation": {"@type": "Organization", "name": "Nanyang Technological University"}}, {"@type": "Person", "name": "Fuyao Zhang", "affiliation": {"@type": "Organization", "name": "Nanyang Technological University"}}, {"@type": "Person", "name": "Yang Cao", "affiliation": {"@type": "Organization", "name": "Institute of Science Tokyo"}}, {"@type": "Person", "name": "Lingjuan Lyu", "affiliation": {"@type": "Organization", "name": "Sony AI"}}, {"@type": "Person", "name": "Wei Yang Bryan Lim", "affiliation": {"@type": "Organization", "name": "Nanyang Technological University"}}],
       "programmingLanguage": "Python",
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
       "keywords": "GUI world model, GUI agent safety, transition verification, interaction hijacking, RSWT-Bench"
@@ -83,6 +85,9 @@ header{padding-top:76px;padding-bottom:8px;text-align:center}
 .eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
 h1{font-size:clamp(30px,5.2vw,46px);line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:0 auto;max-width:17em;text-wrap:balance}
 h1 span{display:block;color:var(--muted);font-weight:600;font-size:.62em;letter-spacing:-.01em;margin-top:.55em;line-height:1.3}
+.authors{font-size:17px;margin:26px auto 0;max-width:40em;text-wrap:balance}
+.affil{font-size:14.5px;color:var(--muted);margin:8px auto 0}
+sup{font-size:.68em;line-height:0}
 .lede{font-size:19px;color:var(--muted);max-width:36em;margin:26px auto 0;text-wrap:pretty}
 .lede strong{color:var(--text);font-weight:600}
 .links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:30px 0 0;padding:0;list-style:none}
@@ -153,6 +158,8 @@ footer a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 <header class="wrap">
   <p class="eyebrow">LGWM</p>
   <h1>Right Screen, Wrong Transition<span>World Models as Verifiers for GUI Agents</span></h1>
+  <p class="authors">Jiaming Zhang<sup>1</sup>, Xuan Wang<sup>1</sup>, Fuyao Zhang<sup>1</sup>, Yang Cao<sup>2</sup>, Lingjuan Lyu<sup>3</sup>, Wei Yang Bryan Lim<sup>1</sup></p>
+  <p class="affil"><sup>1</sup>Nanyang Technological University · <sup>2</sup>Institute of Science Tokyo · <sup>3</sup>Sony AI</p>
   <p class="lede"><strong>LGWM</strong> is a latent world model that checks every step a GUI agent takes. It predicts the next screen in representation space and compares it with what actually appears, with no judge model and no attack labels.</p>
   <ul class="links">
     <li><a class="primary" href="https://github.com/jiamingzhang94/lgwm"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.77-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>Code</a></li>
@@ -256,6 +263,16 @@ echo '{"action_type": "tap", "x": 0.5, "y": 0.5}' &gt; action.json
 python tools/score_transition.py --before before.png --after after.png \
   --action action.json --harm-head weights/lgwm-harm-head</code></pre>
   <p style="margin-top:18px">The command prints <code>integrity</code> and <code>harm_score</code>. The <a href="https://github.com/jiamingzhang94/lgwm">repository</a> also covers evaluation on RSWT-Bench and training from scratch.</p>
+</section>
+
+<section class="wrap" id="citation">
+  <h2>Citation</h2>
+<pre><code>@misc{zhang2026lgwm,
+  title        = {Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents},
+  author       = {Zhang, Jiaming and Wang, Xuan and Zhang, Fuyao and Cao, Yang and Lyu, Lingjuan and Lim, Wei Yang Bryan},
+  year         = {2026},
+  howpublished = {\url{https://github.com/jiamingzhang94/lgwm}}
+}</code></pre>
 </section>
 
 <section class="wrap" id="faq">
