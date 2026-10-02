@@ -1,0 +1,55 @@
+{
+  "format": "gui-hijack-bench-v1",
+  "files": {
+    "test": {
+      "path": "gui_hijack_test.jsonl",
+      "sha256": "c4d08c9f1f0ec61cf142c6804849279b89a9cadf413a61f8efa216ccf5ef4350",
+      "split": "validation",
+      "n": 966,
+      "by_class": {
+        "1_hijack": 222,
+        "2_paired_safe": 222,
+        "3_legit_cred": 222,
+        "4_surprising": 150,
+        "5_benign_misplace": 150
+      },
+      "donor_pairs": 222,
+      "source_bench_sha256": "d46ee8d68ef15ba529a49ef77dbdf8225ec10a2b90d8ac128d4cc202c2fa0ef3",
+      "indexes": {
+        "gui_odyssey": {
+          "sha256": "225ca627de2a7852ef5445d956c3a850862df8e3a9d7cebd15f4bf7b9c3bf009",
+          "rows": 5045
+        },
+        "mobileworld_aitw": {
+          "sha256": "2576144080a418d0c433a417e294b28f8974b4fc1d8340bad0292429c32c786f",
+          "rows": 13392
+        }
+      }
+    },
+    "train": {
+      "path": "gui_hijack_train.jsonl",
+      "sha256": "e0a7acdb13f51101da24c21870808d5d2f8b1297f0f8af41a01647873981ea54",
+      "split": "train",
+      "n": 6786,
+      "by_class": {
+        "1_hijack": 2500,
+        "2_paired_safe": 2500,
+        "3_legit_cred": 532,
+        "4_surprising": 354,
+        "5_benign_misplace": 900
+      },
+      "donor_pairs": null,
+      "source_bench_sha256": "8b83e807c0c6129870e82913b609990c851c7a213ed3e367444c939546949a6b",
+      "indexes": {
+        "gui_odyssey": {
+          "sha256": "d12ba667738b26679c3ad5aba425b4942080c4ad2e3086ecc4695fa3edb50946",
+          "rows": 95788
+        },
+        "mobileworld_aitw": {
+          "sha256": "847bb55d14e7ce317e583ae4287b96303e024bad9ef9ed7e2646cf7657132114",
+          "rows": 639758
+        }
+      }
+    }
+  }
+}

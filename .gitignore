@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.env.*
+/data/
+outputs/
+weights/*
+build/
+dist/
+.pytest_cache/

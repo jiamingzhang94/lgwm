@@ -1,0 +1,56 @@
+# Main LGWM training recipe: 120k updates, global batch 512 on four GPUs.
+data:
+  index_dirs: [data/index]
+  text_table: data/text_table.npz
+  sources:
+    - {name: miniwob_plus_plus, quota: 0.25,  tau_c: 3.1621698141098022,
+       holdout: configs/splits/miniwob_holdout_v1.json}
+    - {name: mobileworld_aitw,  quota: 0.55,  tau_c: 20.710152626037598}
+    - {name: android_control,   quota: 0.069, tau_c: 16.53297519683838}
+    - {name: gui_odyssey,       quota: 0.098, tau_c: 23.791632652282715}
+    - {name: amex,              quota: 0.033, tau_c: 20.317988395690918}
+  excluded_apps: configs/splits/unseen_apps_v1.json
+  workers: 12
+  prefetch: 6
+
+model:
+  encoder: vit_base_patch14_dinov2.lvd142m
+  encoder_hw: [448, 224]
+  pretrained: true
+  init_encoder: outputs/stage_a/encoder.safetensors
+  pred_depth: 12
+  pred_heads: 12
+  ema: [0.996, 1.0]
+
+train:
+  batch_size: 512
+  steps: 120000
+  lr: 1.5e-4
+  lr_final: 1.0e-6
+  warmup: 10000
+  betas: [0.9, 0.95]
+  wd: 0.05
+  grad_clip: 1.0
+  grad_ckpt: true
+  grad_ckpt_dynamic: true
+  seed: 2027
+
+loss:
+  w_changed: 8.0
+  inv_dyn_weight: 0.5
+  vicreg_var: 1.0
+  vicreg_cov: 0.01
+
+rollout:
+  enable_after: 30000
+  p: 0.3
+  horizon: [2, 3]
+  tf_anneal: [1.0, 0.5]
+
+log:
+  every: 500
+  eval_every: 4000
+  eval_batches: 8
+  eval_batch_size: 128
+  ckpt_every: 4000
+  keep: 3

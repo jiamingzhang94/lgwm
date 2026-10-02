@@ -1,0 +1,56 @@
+{
+ "seed": 2027,
+ "frac": 0.12,
+ "per_source": {
+  "gui_odyssey": {
+   "n_apps_total": 1052,
+   "n_apps_eligible": 225,
+   "n_apps_held_out": 12,
+   "n_transitions_total": 95788,
+   "n_transitions_held_out": 2803,
+   "transition_loss_frac": 0.02926,
+   "apps": [
+    "Clock+Instagram",
+    "Amazon+Reddit",
+    "Amazon+Chrome+Clock+Gmail",
+    "Firefox+GPS",
+    "Opera+Simplenote",
+    "Ebay+Opera+Things",
+    "Calendar+Chrome",
+    "DuckDuckGo+Google Play Store",
+    "Clock+X+ZOOM Cloud Meetings",
+    "Amazon+Facebook",
+    "Calendar+Firefox",
+    "Chrome+Microsoft to do"
+   ]
+  },
+  "amex": {
+   "n_apps_total": 59,
+   "n_apps_eligible": 51,
+   "n_apps_held_out": 2,
+   "n_transitions_total": 32613,
+   "n_transitions_held_out": 969,
+   "transition_loss_frac": 0.02971,
+   "apps": [
+    "hk.ikea.android",
+    "org.thoughtcrime.securesms"
+   ]
+  }
+ },
+ "apps": [
+  "Clock+Instagram",
+  "Amazon+Reddit",
+  "Amazon+Chrome+Clock+Gmail",
+  "Firefox+GPS",
+  "Opera+Simplenote",
+  "Ebay+Opera+Things",
+  "Calendar+Chrome",
+  "DuckDuckGo+Google Play Store",
+  "Clock+X+ZOOM Cloud Meetings",
+  "Amazon+Facebook",
+  "Calendar+Firefox",
+  "Chrome+Microsoft to do",
+  "hk.ikea.android",
+  "org.thoughtcrime.securesms"
+ ]
+}
