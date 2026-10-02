@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "benchmark/gui_hijack_test.jsonl")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "benchmark/rswt_bench_test.jsonl")
     parser.add_argument("--features", type=Path, required=True)
     parser.add_argument("--harm-head", type=Path, default=ROOT / "weights/lgwm-harm-head")
     parser.add_argument("--n-boot", type=int, default=200_000)

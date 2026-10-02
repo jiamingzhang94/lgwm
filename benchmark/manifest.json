@@ -2,7 +2,7 @@
   "format": "gui-hijack-bench-v1",
   "files": {
     "test": {
-      "path": "gui_hijack_test.jsonl",
+      "path": "rswt_bench_test.jsonl",
       "sha256": "c4d08c9f1f0ec61cf142c6804849279b89a9cadf413a61f8efa216ccf5ef4350",
       "split": "validation",
       "n": 966,
@@ -27,7 +27,7 @@
       }
     },
     "train": {
-      "path": "gui_hijack_train.jsonl",
+      "path": "rswt_bench_train.jsonl",
       "sha256": "e0a7acdb13f51101da24c21870808d5d2f8b1297f0f8af41a01647873981ea54",
       "split": "train",
       "n": 6786,

@@ -1,42 +1,44 @@
-# LGWM: A Latent World Model that Verifies GUI Agent Transitions
+# Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents
 
-Official code for **Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents**.
+Official code for **LGWM** (Latent GUI World Model).
 
 Jiaming Zhang, Xuan Wang, Fuyao Zhang, Yang Cao, Lingjuan Lyu, Wei Yang Bryan Lim
 
-[Project page](https://jiamingzhang94.github.io/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data)
+[Project page](https://jiamingzhang94.github.io/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data) · Paper coming soon
 
-LGWM is a decoder-free, action-conditioned world model for GUI agents. Given the
-current screenshot and an action, it predicts the representation of the next
-screen, and compares it with the screen that actually appears. One cosine
-distance tells whether the transition is the one the action should have produced.
+![LGWM compares predicted and observed screens in one representation space. The same login screen is legitimate after one action and a hijack after another.](https://jiamingzhang94.github.io/lgwm/assets/overview.png)
+
+LGWM is an action-conditioned world model that predicts the next screen in
+representation space and checks it against the screen that actually appears. One
+cosine distance verifies every step of a GUI agent, with no judge model and no
+attack labels.
 
 ## Overview
 
-A login screen that appears after a tap on *Sign in* is expected; the same screen
-after a tap on *View order* is an attack. For GUI agents, safety is therefore a
-property of the transition rather than of the screen, and a monitor that inspects
+A login screen that appears after a tap on “Sign in” is expected. The same screen,
+pixel for pixel, after a tap on “View order” is an attack. For GUI agents, safety is
+a property of the transition rather than of the screen, and a monitor that inspects
 only screens can be defeated by reusing a legitimate one. Judging a transition
 requires an expectation of what should have followed the action. Existing GUI
-world models provide one, but they output it as text, code or images, so checking
-it against the observed screen requires a second model to judge the two.
+world models provide one, but they render it as text, code or images, so checking
+it against the observed screen takes a second model to judge the two.
 
-LGWM instead predicts in the space in which observations are encoded. It is
-trained without semantic annotation on 1.85M real GUI transitions. Verification
-reduces to a vector comparison, and the same signal reveals whether a mismatch is
-harmful. We evaluate on RSWT-Bench, a diagnostic where each credential screen
-appears under both a legitimate and a hijacked transition, so detectors that see
-only the screen are at chance by construction.
+LGWM predicts in the space where observations are encoded. It is trained without
+semantic annotation on 1.85M real GUI transitions. Verification becomes a vector
+comparison, and the same residual shows whether a mismatch is harmful. We evaluate
+on RSWT-Bench, a diagnostic where each credential screen appears under both a
+legitimate and a hijacked transition, so detectors that see only the screen are at
+chance by construction.
 
 ## Key results
 
-- **0.987 AUC** on RSWT-Bench with a training-free integrity score, on par with the
-  strongest closed-source VLMs.
-- **17 ms** per decision on one A100, over three orders of magnitude faster than
-  generative GUI world models, and about ten AUC points more accurate.
+- **0.987 AUC** on RSWT-Bench with a training-free integrity score, within one AUC
+  point of Gemini 3.7 Flash (0.995) and GPT-5.6 Luna (0.988).
+- **17 ms** per decision on one A100. World models that render the future (gWorld,
+  Code2World) score about ten AUC points lower and need over 90 s per transition.
 - **0.954 AUC** at separating harmful from benign violations with a linear head on
-  the prediction residual, where prompted VLMs are near chance.
-- **173M** parameters at inference (ViT-B encoder, action encoder and predictor).
+  the prediction residual, where prompted VLMs score between 0.51 and 0.61.
+- **261M** parameters in training, 173M at inference.
 
 ## Install
 
@@ -100,12 +102,12 @@ hf download jiamingzz/lgwm-data --repo-type dataset --local-dir data
 | `data/index/` | Transition indexes for each source and split |
 | `data/text_table.npz` | Action-text embeddings |
 
-The corpus has 1,824,824 training and 20,835 validation transitions.
+The corpus has 1,824,824 training and 20,835 validation transitions (36 GB).
 
 ## Evaluation
 
-RSWT-Bench is defined by `benchmark/gui_hijack_test.jsonl` (966 examples)
-and `benchmark/gui_hijack_train.jsonl` (6,786 examples for the harm head). Each
+RSWT-Bench is defined by `benchmark/rswt_bench_test.jsonl` (966 examples)
+and `benchmark/rswt_bench_train.jsonl` (6,786 examples for the harm head). Each
 record references transitions in the indexes:
 
 | Field | Meaning |
@@ -117,7 +119,7 @@ record references transitions in the indexes:
 | `cls` | 1 hijacked, 2 paired safe, 3 legitimate credential, 4 surprising benign, 5 benign mismatch |
 
 ```bash
-python tools/extract_features.py --manifest benchmark/gui_hijack_test.jsonl \
+python tools/extract_features.py --manifest benchmark/rswt_bench_test.jsonl \
   --data-root data --index-dir data/index --output outputs/features/test
 python tools/evaluate_benchmark.py --features outputs/features/test \
   --output outputs/eval/test.json
@@ -149,7 +151,7 @@ python tools/export_weights.py --checkpoint outputs/runs/lgwm_main/ckpt/final.pt
 Fit the harm head on the benchmark training split:
 
 ```bash
-python tools/extract_features.py --manifest benchmark/gui_hijack_train.jsonl \
+python tools/extract_features.py --manifest benchmark/rswt_bench_train.jsonl \
   --weights weights/retrained-online --data-root data --index-dir data/index \
   --output outputs/features/train_retrained
 python tools/train_harm_head.py --features outputs/features/train_retrained \
@@ -164,9 +166,11 @@ Add `--resume` to resume a training run. To evaluate your trained model, use
 
 ```bibtex
 @misc{zhang2026lgwm,
-  title        = {Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents},
-  author       = {Zhang, Jiaming and Wang, Xuan and Zhang, Fuyao and Cao, Yang and Lyu, Lingjuan and Lim, Wei Yang Bryan},
-  year         = {2026},
+  title  = {Right Screen, Wrong Transition:
+            World Models as Verifiers for GUI Agents},
+  author = {Zhang, Jiaming and Wang, Xuan and Zhang, Fuyao and
+            Cao, Yang and Lyu, Lingjuan and Lim, Wei Yang Bryan},
+  year   = {2026},
   howpublished = {\url{https://github.com/jiamingzhang94/lgwm}}
 }
 ```

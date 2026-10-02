@@ -25,7 +25,7 @@ def load_features(directory):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "benchmark/gui_hijack_train.jsonl")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "benchmark/rswt_bench_train.jsonl")
     parser.add_argument("--features", type=Path, required=True, help="output of extract_features.py for the manifest")
     parser.add_argument("--output", type=Path, default=ROOT / "weights/lgwm-harm-head")
     args = parser.parse_args()
