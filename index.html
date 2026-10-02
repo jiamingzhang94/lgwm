@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LGWM: A Latent World Model that Verifies GUI Agent Transitions</title>
+<meta name="description" content="LGWM is a decoder-free, action-conditioned world model for GUI agents. It predicts the next screen in representation space and verifies each transition with one cosine distance: 0.987 AUC on RSWT-Bench at 17 ms per decision.">
+<meta name="keywords" content="LGWM, GUI world model, latent world model, GUI agent safety, computer-use agents, transition verification, interaction hijacking, RSWT-Bench, JEPA">
+<link rel="canonical" href="https://jiamingzhang94.github.io/lgwm/">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1216" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LGWM">
+<meta property="og:title" content="LGWM: A Latent World Model that Verifies GUI Agent Transitions">
+<meta property="og:description" content="Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents. 0.987 AUC on RSWT-Bench at 17 ms per decision, with no judge model and no attack labels.">
+<meta property="og:url" content="https://jiamingzhang94.github.io/lgwm/">
+<meta property="og:image" content="https://jiamingzhang94.github.io/lgwm/assets/overview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LGWM: A Latent World Model that Verifies GUI Agent Transitions">
+<meta name="twitter:description" content="0.987 AUC on RSWT-Bench at 17 ms per decision, with no judge model and no attack labels.">
+<meta name="twitter:image" content="https://jiamingzhang94.github.io/lgwm/assets/overview.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": "https://github.com/jiamingzhang94/lgwm",
+      "name": "LGWM",
+      "alternateName": "Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents",
+      "description": "A decoder-free, action-conditioned latent world model that verifies GUI agent transitions by comparing the predicted and observed next-screen representations.",
+      "codeRepository": "https://github.com/jiamingzhang94/lgwm",
+      "url": "https://jiamingzhang94.github.io/lgwm/",
+      "programmingLanguage": "Python",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "keywords": "GUI world model, GUI agent safety, transition verification, interaction hijacking, RSWT-Bench"
+    },
+    {
+      "@type": "Dataset",
+      "name": "LGWM data",
+      "description": "1,824,824 training and 20,835 validation GUI transitions (before screenshot, action, after screenshot) from AITW, AndroidControl, GUIOdyssey, AMEX and MiniWoB++, plus the RSWT-Bench manifests.",
+      "url": "https://huggingface.co/datasets/jiamingzz/lgwm-data"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "What is LGWM?",
+         "acceptedAnswer": {"@type": "Answer", "text": "LGWM is a decoder-free, action-conditioned world model for GUI agents. Given the current screenshot and an action, it predicts the representation of the next screen and compares it with the screen that actually appears. One cosine distance tells whether the transition is the one the action should have produced."}},
+        {"@type": "Question", "name": "What is interaction hijacking, and why do screen-only monitors miss it?",
+         "acceptedAnswer": {"@type": "Answer", "text": "In interaction hijacking, an agent's action leads to a screen that is legitimate in another context, such as a real login page shown after tapping View order. The screen itself contains nothing malicious, so a monitor that inspects only the resulting screen cannot tell the hijacked case from the legitimate one. The evidence is in the transition."}},
+        {"@type": "Question", "name": "What is RSWT-Bench?",
+         "acceptedAnswer": {"@type": "Answer", "text": "RSWT-Bench (Right Screen, Wrong Transition) is a diagnostic benchmark with 966 test transitions built around 222 donor pairs. Each credential screen appears under both a legitimate and a hijacked transition, so any detector that sees only the outcome screen scores 0.5 AUC by construction."}},
+        {"@type": "Question", "name": "How accurate and how fast is LGWM?",
+         "acceptedAnswer": {"@type": "Answer", "text": "The training-free integrity score reaches 0.987 AUC on RSWT-Bench at 17 ms per decision on one A100 GPU with 1.09 GB of memory. That is on par with the strongest closed-source VLMs and about ten AUC points above generative GUI world models, with up to 7,000 times lower latency."}},
+        {"@type": "Question", "name": "Does LGWM need attack labels?",
+         "acceptedAnswer": {"@type": "Answer", "text": "No. The world model is trained self-supervised on 1.85 million real GUI transitions without semantic annotation, and the integrity score needs no labels or judge model. Only the optional harm head, a linear classifier on the prediction residual, is supervised."}}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#ffffff; --surface:#f6f7f9; --line:#e4e7ec; --text:#14181f; --muted:#5a6472;
+  --accent:#1d4ed8; --accent-soft:#eef3ff; --code-bg:#0f1720; --code-text:#e6edf3; --fig-bg:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1216; --surface:#171b21; --line:#272d36; --text:#e8ebef; --muted:#9aa4b2;
+    --accent:#8ab0ff; --accent-soft:#18233a; --code-bg:#0a0d11; --code-text:#e6edf3; --fig-bg:#ffffff;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:17px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:780px;margin-inline:auto;padding-inline:20px}
+.wide{max-width:1040px;margin-inline:auto;padding-inline:20px}
+header{padding-top:76px;padding-bottom:8px;text-align:center}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
+h1{font-size:clamp(30px,5.2vw,46px);line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:0 auto;max-width:17em;text-wrap:balance}
+h1 span{display:block;color:var(--muted);font-weight:600;font-size:.62em;letter-spacing:-.01em;margin-top:.55em;line-height:1.3}
+.lede{font-size:19px;color:var(--muted);max-width:36em;margin:26px auto 0;text-wrap:pretty}
+.lede strong{color:var(--text);font-weight:600}
+.links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:30px 0 0;padding:0;list-style:none}
+.links a{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;
+  font-size:15px;font-weight:600;border:1px solid var(--line);color:var(--text);background:var(--bg)}
+.links a:hover{text-decoration:none;border-color:var(--text)}
+.links a.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.links a.primary:hover{opacity:.88}
+.links svg{width:17px;height:17px;fill:currentColor}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:56px 0 0;padding:0;list-style:none;
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.stats li{padding:22px 18px;text-align:center;border-left:1px solid var(--line)}
+.stats li:first-child{border-left:0}
+.stats b{display:block;font-size:30px;line-height:1.1;letter-spacing:-.02em;font-weight:700;font-variant-numeric:tabular-nums}
+.stats span{display:block;margin-top:6px;font-size:13.5px;line-height:1.4;color:var(--muted)}
+figure{margin:56px 0 0}
+figure img{display:block;width:100%;height:auto;border-radius:14px;background:var(--fig-bg);border:1px solid var(--line)}
+figcaption{font-size:14.5px;color:var(--muted);margin:14px auto 0;max-width:760px;text-align:center;text-wrap:pretty}
+figcaption strong{color:var(--text);font-weight:600}
+section{margin-top:68px}
+h2{font-size:26px;line-height:1.25;letter-spacing:-.015em;font-weight:700;margin:0 0 16px}
+h3{font-size:17px;line-height:1.4;font-weight:650;margin:0 0 6px}
+p{margin:0 0 16px;text-wrap:pretty}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.card{border:1px solid var(--line);border-radius:14px;padding:20px 22px;background:var(--surface)}
+.card p{margin:0;font-size:15.5px;color:var(--muted)}
+.tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 8px;margin-bottom:10px}
+.table-scroll{overflow-x:auto;margin:28px 0 0;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14.5px;font-variant-numeric:tabular-nums}
+caption{caption-side:top;text-align:left;padding:14px 16px;font-size:14.5px;color:var(--muted);border-bottom:1px solid var(--line)}
+caption strong{color:var(--text)}
+th,td{padding:7px 14px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.02em;border-bottom:1px solid var(--line);background:var(--surface)}
+tbody th{font-weight:500}
+tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--line)}
+tr.group th{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  background:var(--surface);padding-top:8px;padding-bottom:8px;border-top:1px solid var(--line)}
+tr.ours th,tr.ours td{background:var(--accent-soft);font-weight:700;color:var(--text)}
+.note{font-size:13.5px;color:var(--muted);margin:12px 2px 0}
+pre{margin:22px 0 0;padding:20px 22px;border-radius:14px;background:var(--code-bg);color:var(--code-text);
+  font:13.5px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;overflow-x:auto}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:.92em}
+p code,dd code{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.faq{margin:8px 0 0}
+.faq div{padding:20px 0;border-top:1px solid var(--line)}
+.faq div:first-child{border-top:0;padding-top:4px}
+.faq dt{font-weight:650;margin:0 0 6px}
+.faq dd{margin:0;color:var(--muted);font-size:16px}
+footer{margin:80px 0 0;padding:28px 0 44px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);text-align:center}
+footer a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:720px){
+  body{font-size:16px}
+  header{padding-top:48px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stats li:nth-child(3){border-left:0}
+  .stats li:nth-child(n+3){border-top:1px solid var(--line)}
+  .stats b{font-size:26px}
+  .cols{grid-template-columns:1fr}
+  section{margin-top:52px}
+  h2{font-size:23px}
+}
+</style>
+</head>
+<body>
+<main>
+<header class="wrap">
+  <p class="eyebrow">LGWM</p>
+  <h1>Right Screen, Wrong Transition<span>World Models as Verifiers for GUI Agents</span></h1>
+  <p class="lede"><strong>LGWM</strong> is a latent world model that checks every step a GUI agent takes. It predicts the next screen in representation space and compares it with what actually appears, with no judge model and no attack labels.</p>
+  <ul class="links">
+    <li><a class="primary" href="https://github.com/jiamingzhang94/lgwm"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.77-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>Code</a></li>
+    <li><a href="https://huggingface.co/jiamingzz/lgwm">Model weights</a></li>
+    <li><a href="https://huggingface.co/datasets/jiamingzz/lgwm-data">Data</a></li>
+  </ul>
+</header>
+
+<div class="wide">
+  <ul class="stats" aria-label="Key results">
+    <li><b>0.987</b><span>AUC on RSWT-Bench, with no labels</span></li>
+    <li><b>17 ms</b><span>per decision on one A100</span></li>
+    <li><b>0.954</b><span>AUC separating harmful from benign violations</span></li>
+    <li><b>1.85M</b><span>real GUI transitions, no semantic annotation</span></li>
+  </ul>
+  <figure>
+    <img src="assets/overview.png" width="2352" height="804" alt="Left: a generative world model renders a predicted screen and needs a VLM judge that takes 93 to 124 seconds, while LGWM compares predicted and observed representations in one space in 17 ms. Right: the same login screen is a hijack after one action and safe after another.">
+    <figcaption><strong>Safety is a property of the transition.</strong> The same login screen is expected after <em>Sign in</em> and an attack after <em>View order</em>. LGWM verifies the transition directly in representation space.</figcaption>
+  </figure>
+</div>
+
+<section class="wrap" id="overview">
+  <h2>Why verify transitions</h2>
+  <p>A monitor that inspects only screens can be defeated by reusing a legitimate one. Judging a transition requires an expectation of what should have followed the action. Existing GUI world models provide one, but they output it as text, code or images, so checking it against the observed screen requires a second model to judge the two.</p>
+  <p>LGWM predicts in the space in which observations are encoded. It is a decoder-free, action-conditioned world model trained without semantic annotation on 1.85M real GUI transitions. Verification reduces to a vector comparison, and the same signal reveals whether a mismatch is harmful. World models have mostly served as simulators or planners; LGWM gives them a third role, verification.</p>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <h2>How LGWM works</h2>
+    <p>A ViT encoder turns the current screenshot into 512 visual tokens. An action encoder embeds the action type, its text and its touch coordinates. A Transformer predictor combines both and forecasts the tokens of the next screen. There is no image decoder and no autoregressive generation.</p>
+  </div>
+  <div class="wide">
+    <figure style="margin-top:28px">
+      <img src="assets/method.png" width="2352" height="768" alt="Training: the predictor forecasts the next-screen representation produced by an EMA target encoder. Runtime: the predicted and observed representations are compared by cosine similarity for the integrity score, and a linear head on their residual gives the harm score.">
+      <figcaption><strong>One predicted future, two readouts.</strong> An EMA encoder supplies training targets; at runtime the online encoder represents both screens.</figcaption>
+    </figure>
+  </div>
+  <div class="wrap">
+    <div class="cols">
+      <div class="card"><span class="tag">Training-free</span><h3>Transition integrity</h3><p>The cosine distance between the predicted and the observed next screen. It needs no attack labels, no benchmark supervision and no judge model.</p></div>
+      <div class="card"><span class="tag">Linear head</span><h3>Harm score</h3><p>An unexpected transition can still be harmless. A linear classifier on the prediction residual separates harmful violations from benign surprises.</p></div>
+    </div>
+    <p style="margin-top:24px">Training starts from DINOv2, adapts the encoder to GUI screenshots, then trains the world model for 120,000 updates on transitions from Android in the Wild, AndroidControl, GUIOdyssey, AMEX and MiniWoB++. The inference model has 173M parameters.</p>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <h2>Results on RSWT-Bench</h2>
+    <p>RSWT-Bench contains 966 test transitions built around 222 donor pairs. Each credential screen appears under both a legitimate and a hijacked transition, so a detector that sees only the outcome screen scores 0.5 AUC by construction. Every method receives the same before screen, action and after screen.</p>
+  </div>
+  <div class="wide">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Main results on RSWT-Bench">
+      <table>
+        <caption><strong>Detection quality and per-decision cost.</strong> AUC, higher is better. Cost at batch size one on a single A100-80GB.</caption>
+        <thead>
+          <tr><th scope="col">Method</th><th scope="col">Params</th><th scope="col">RSWT</th><th scope="col">Swap</th><th scope="col">Cred</th><th scope="col">Latency (ms)</th><th scope="col">TFLOPs</th><th scope="col">VRAM (GB)</th></tr>
+        </thead>
+        <tbody>
+          <tr class="group"><th colspan="8" scope="rowgroup">Closed-source VLMs</th></tr>
+          <tr><th scope="row">Gemini 3.7 Flash</th><td>–</td><td>0.995</td><td>0.998</td><td>0.997</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">GPT-5.6 Luna</th><td>–</td><td>0.988</td><td>0.971</td><td>0.979</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">Qwen3.7 Plus</th><td>–</td><td>0.973</td><td>0.954</td><td>0.950</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">Qwen3.7 Flash</th><td>–</td><td>0.968</td><td>0.953</td><td>0.935</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">Qwen3-VL-Plus</th><td>–</td><td>0.918</td><td>0.881</td><td>0.867</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">Claude Haiku 4.5</th><td>–</td><td>0.880</td><td>0.842</td><td>0.844</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr><th scope="row">Qwen3-VL-Flash</th><td>–</td><td>0.746</td><td>0.818</td><td>0.669</td><td>–</td><td>–</td><td>–</td></tr>
+          <tr class="group"><th colspan="8" scope="rowgroup">Open VLMs</th></tr>
+          <tr><th scope="row">GLM-4.6V-Flash</th><td>9B</td><td>0.909</td><td>0.868</td><td>0.830</td><td>3,711.6</td><td>15.316</td><td>20.72</td></tr>
+          <tr><th scope="row">Qwen3-VL-8B</th><td>8B</td><td>0.907</td><td>0.905</td><td>0.859</td><td>1,097.8</td><td>10.924</td><td>17.72</td></tr>
+          <tr><th scope="row">Qwen3-VL-4B</th><td>4B</td><td>0.905</td><td>0.863</td><td>0.846</td><td>1,075.1</td><td>5.530</td><td>9.05</td></tr>
+          <tr><th scope="row">Qwen3-VL-2B</th><td>2B</td><td>0.688</td><td>0.712</td><td>0.605</td><td>829.8</td><td>2.651</td><td>4.39</td></tr>
+          <tr><th scope="row">Qwen2.5-VL-7B</th><td>7B</td><td>0.574</td><td>0.580</td><td>0.543</td><td>819.4</td><td>11.427</td><td>16.73</td></tr>
+          <tr class="group"><th colspan="8" scope="rowgroup">Generative world models</th></tr>
+          <tr><th scope="row">gWorld-8B</th><td>8B</td><td>0.885</td><td>0.897</td><td>0.837</td><td>113,200.0</td><td>74.100</td><td>18.18</td></tr>
+          <tr><th scope="row">SAWM</th><td>8B</td><td>0.882</td><td>0.836</td><td>0.804</td><td>1,127.7</td><td>13.449</td><td>17.77</td></tr>
+          <tr><th scope="row">Code2World</th><td>7B</td><td>0.870</td><td>0.901</td><td>0.859</td><td>92,900.0</td><td>110.711</td><td>18.56</td></tr>
+          <tr><th scope="row">MobileWorld-HTML</th><td>8B</td><td>0.577</td><td>0.691</td><td>0.568</td><td>124,300.0</td><td>119.321</td><td>18.64</td></tr>
+          <tr class="group"><th colspan="8" scope="rowgroup">Latent world model</th></tr>
+          <tr class="ours"><th scope="row">LGWM (ours)</th><td>261M</td><td>0.987</td><td>0.970</td><td>0.985</td><td>17.1</td><td>0.408</td><td>1.09</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">RSWT: hijacked vs. legitimate credential transitions. Swap and Cred: benign mismatches vs. paired-safe and legitimate credential transitions. LGWM has 261M parameters in training and 173M at inference.</p>
+  </div>
+  <div class="wrap" style="margin-top:28px">
+    <p>LGWM orders 219 of 222 donor pairs correctly. One decision takes 17 ms and 1.09 GB of memory: 64× faster and 16× lighter than Qwen3-VL-8B, and up to 7,000× faster than generative GUI world models, which also need a separate VLM judge.</p>
+    <p>The harm head reaches 0.954 AUC at separating harmful from benign violations, a task on which prompted VLMs are near chance.</p>
+  </div>
+</section>
+
+<section class="wrap" id="quickstart">
+  <h2>Quick start</h2>
+  <p>Score one transition from a before screenshot, an action and an after screenshot.</p>
+<pre><code>git clone https://github.com/jiamingzhang94/lgwm &amp;&amp; cd lgwm
+pip install -c requirements-tested.txt -e '.[text]'
+hf download jiamingzz/lgwm --local-dir weights
+
+echo '{"action_type": "tap", "x": 0.5, "y": 0.5}' &gt; action.json
+python tools/score_transition.py --before before.png --after after.png \
+  --action action.json --harm-head weights/lgwm-harm-head</code></pre>
+  <p style="margin-top:18px">The command prints <code>integrity</code> and <code>harm_score</code>. The <a href="https://github.com/jiamingzhang94/lgwm">repository</a> also covers evaluation on RSWT-Bench and training from scratch.</p>
+</section>
+
+<section class="wrap" id="faq">
+  <h2>Questions</h2>
+  <dl class="faq">
+    <div><dt>What is LGWM?</dt><dd>A decoder-free, action-conditioned world model for GUI agents. Given the current screenshot and an action, it predicts the representation of the next screen and compares it with the screen that actually appears. One cosine distance tells whether the transition is the one the action should have produced.</dd></div>
+    <div><dt>What is interaction hijacking, and why do screen-only monitors miss it?</dt><dd>An agent's action leads to a screen that is legitimate in another context, such as a real login page shown after tapping <em>View order</em>. The screen contains nothing malicious, so a monitor that inspects only the result cannot tell the hijacked case from the legitimate one. The evidence is in the transition.</dd></div>
+    <div><dt>What is RSWT-Bench?</dt><dd>A diagnostic benchmark with 966 test transitions built around 222 donor pairs. Each credential screen appears under both a legitimate and a hijacked transition, so any detector that sees only the outcome screen scores 0.5 AUC by construction.</dd></div>
+    <div><dt>How does LGWM differ from generative GUI world models?</dt><dd>Generative world models render the predicted future as text, code or pixels, then need a second model to judge it against the observed screen. LGWM keeps the prediction in representation space, so verification is a single vector comparison that takes 17 ms, where rendering a future can take up to 124 seconds.</dd></div>
+    <div><dt>Does LGWM need attack labels?</dt><dd>No. The world model is trained self-supervised, and the integrity score needs no labels or judge model. Only the optional harm head, a linear classifier on the prediction residual, is supervised.</dd></div>
+  </dl>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">LGWM · Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents<br>
+  <a href="https://github.com/jiamingzhang94/lgwm">GitHub</a> · <a href="https://huggingface.co/jiamingzz/lgwm">Hugging Face</a> · Apache-2.0</div>
+</footer>
+</body>
+</html>
