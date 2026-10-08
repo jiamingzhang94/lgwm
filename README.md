@@ -4,9 +4,9 @@ Official code for **LGWM** (Latent GUI World Model).
 
 Jiaming Zhang, Xuan Wang, Fuyao Zhang, Yang Cao, Lingjuan Lyu, Wei Yang Bryan Lim
 
-[Project page](https://jiamingzhang94.github.io/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data) · Paper coming soon
+[Project page](https://jiamingzhang.netlify.app/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data) · Paper coming soon
 
-![LGWM compares predicted and observed screens in one representation space. The same login screen is legitimate after one action and a hijack after another.](https://jiamingzhang94.github.io/lgwm/assets/overview.png)
+![LGWM compares predicted and observed screens in one representation space. The same login screen is legitimate after one action and a hijack after another.](https://jiamingzhang.netlify.app/lgwm/assets/overview.png)
 
 LGWM is an action-conditioned world model that predicts the next screen in
 representation space and checks it against the screen that actually appears. One

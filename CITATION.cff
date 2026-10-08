@@ -22,6 +22,6 @@ authors:
     given-names: Wei Yang Bryan
     affiliation: Nanyang Technological University
 repository-code: "https://github.com/jiamingzhang94/lgwm"
-url: "https://jiamingzhang94.github.io/lgwm/"
+url: "https://jiamingzhang.netlify.app/lgwm/"
 license: Apache-2.0
 date-released: "2026-10-02"
