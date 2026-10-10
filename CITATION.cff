@@ -25,3 +25,22 @@ repository-code: "https://github.com/jiamingzhang94/lgwm"
 url: "https://jiamingzhang.netlify.app/lgwm/"
 license: Apache-2.0
 date-released: "2026-10-02"
+preferred-citation:
+  type: article
+  title: "Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents"
+  authors:
+    - family-names: Zhang
+      given-names: Jiaming
+    - family-names: Wang
+      given-names: Xuan
+    - family-names: Zhang
+      given-names: Fuyao
+    - family-names: Cao
+      given-names: Yang
+    - family-names: Lyu
+      given-names: Lingjuan
+    - family-names: Lim
+      given-names: Wei Yang Bryan
+  journal: "arXiv preprint arXiv:2610.11942"
+  year: 2026
+  url: "https://arxiv.org/abs/2610.11942"

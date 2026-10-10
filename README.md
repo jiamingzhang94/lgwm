@@ -4,7 +4,7 @@ Official code for **LGWM** (Latent GUI World Model).
 
 Jiaming Zhang, Xuan Wang, Fuyao Zhang, Yang Cao, Lingjuan Lyu, Wei Yang Bryan Lim
 
-[Project page](https://jiamingzhang.netlify.app/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data) · Paper coming soon
+[Project page](https://jiamingzhang.netlify.app/lgwm/) · [Model weights](https://huggingface.co/jiamingzz/lgwm) · [Data](https://huggingface.co/datasets/jiamingzz/lgwm-data) · [Paper](https://arxiv.org/abs/2610.11942)
 
 ![LGWM compares predicted and observed screens in one representation space. The same login screen is legitimate after one action and a hijack after another.](https://jiamingzhang.netlify.app/lgwm/assets/overview.png)
 
@@ -165,13 +165,13 @@ Add `--resume` to resume a training run. To evaluate your trained model, use
 ## Citation
 
 ```bibtex
-@misc{zhang2026lgwm,
-  title  = {Right Screen, Wrong Transition:
-            World Models as Verifiers for GUI Agents},
-  author = {Zhang, Jiaming and Wang, Xuan and Zhang, Fuyao and
-            Cao, Yang and Lyu, Lingjuan and Lim, Wei Yang Bryan},
-  year   = {2026},
-  howpublished = {\url{https://github.com/jiamingzhang94/lgwm}}
+@article{zhang2026lgwm,
+  title   = {Right Screen, Wrong Transition:
+             World Models as Verifiers for GUI Agents},
+  author  = {Zhang, Jiaming and Wang, Xuan and Zhang, Fuyao and
+             Cao, Yang and Lyu, Lingjuan and Lim, Wei Yang Bryan},
+  journal = {arXiv preprint arXiv:2610.11942},
+  year    = {2026}
 }
 ```
 
